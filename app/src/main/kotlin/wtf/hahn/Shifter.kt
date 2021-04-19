@@ -2,6 +2,7 @@ package wtf.hahn
 
 import kotlin.math.abs
 
+
 class Shifter {
 
     fun shift(input: Char, key: Char): Char {
@@ -16,12 +17,12 @@ class Shifter {
 
     fun shiftDec(input: Char, key: Char): Char {
         if (input < 'A' || input > 'Z') return input
-        val shift = abs((key.toInt() - 'A'.toInt() - 26))
-        if (input.toInt() + shift <= 'Z'.toInt()) {
-            return (input.toInt() + shift).toChar()
+        val shift = key.toInt() - 'A'.toInt()
+        if (input.toInt() - shift >= 'A'.toInt()) {
+            return (input.toInt() - shift).toChar()
         }
-        val overflow = input.toInt() + shift - 'Z'.toInt()
-        return ('A'.toInt() + overflow - 1).toChar()
+        val overflow = abs(input.toInt() - key.toInt())
+        return ('Z'.toInt() - overflow - 1).toChar()
     }
 
     fun encrypt(text: String, key: String): String {
