@@ -6,14 +6,17 @@ import kotlin.test.assertEquals
 class ShifterTest {
     @Test fun shiftTest() {
         val shifter = Shifter()
-        assertEquals(shifter.shift('A', 'B'), 'B')
-        assertEquals(shifter.shift('B', 'B'), 'C')
-        assertEquals(shifter.shift('B', 'B'), 'C')
-        assertEquals(shifter.shift('W', 'E'), 'A')
-        assertEquals(shifter.shift('W', 'F'), 'B')
-        assertEquals(shifter.shift('M', 'R'), 'D')
-        assertEquals(shifter.shift('M', 'V'), 'H')
-        //assertEquals(shifter.shiftDec('W', 'R'), 'V')
+        assertEquals('B', shifter.shift('A', 'B'))
+        assertEquals('C', shifter.shift('B', 'B'))
+        assertEquals('A', shifter.shift('W', 'E'))
+        assertEquals('B', shifter.shift('W', 'F'))
+        assertEquals('R', shifter.shift('W', 'V'))
+        assertEquals('D', shifter.shift('M', 'R'))
+        assertEquals('H', shifter.shift('M', 'V'))
+        assertEquals('A', shifter.shiftDec('B', 'B'))
+        assertEquals('W', shifter.shiftDec('R', 'V'))
+
+
     }
 
     @Test fun encryptTest() {
@@ -24,6 +27,6 @@ class ShifterTest {
 
 
 
-        //assertEquals(expected = text, actual = Shifter().decrypt(chiper, key))
+        assertEquals(expected = text, actual = Shifter().decrypt(chiper, key))
     }
 }

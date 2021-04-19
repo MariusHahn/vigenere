@@ -1,7 +1,5 @@
 package wtf.hahn
 
-import kotlin.math.abs
-
 
 class Shifter {
 
@@ -17,12 +15,12 @@ class Shifter {
 
     fun shiftDec(input: Char, key: Char): Char {
         if (input < 'A' || input > 'Z') return input
-        val shift = key.toInt() - 'A'.toInt()
-        if (input.toInt() - shift >= 'A'.toInt()) {
-            return (input.toInt() - shift).toChar()
-        }
-        val overflow = abs(input.toInt() - key.toInt())
-        return ('Z'.toInt() - overflow - 1).toChar()
+        val padding = 65
+        val alphabethSize = 26
+        val i = input - padding
+        val k = key - padding
+        val o = (i - k + alphabethSize) % alphabethSize
+        return (o + padding).toChar()
     }
 
     fun encrypt(text: String, key: String): String {
@@ -32,9 +30,8 @@ class Shifter {
     }
 
     fun decrypt(chipper: String, key: String): String {
-        return key
-                .mapIndexed { index, c ->
-                    shift(c, chipper[index])}
+        return chipper
+                .mapIndexed { index, c -> shiftDec(c, key[index]) }
                 .joinToString("")
     }
 }
