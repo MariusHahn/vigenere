@@ -11,15 +11,19 @@ class Crypt {
     }
 
     fun encrypt(text: String, key: String): String {
-        val text = text.toUpperCase()
-        val key = enlargeKey(text, key)
-        return text.mapIndexed { index, c -> encrypt(c, key[index]) }.joinToString("")
+        return crypt(text, key, ::encrypt)
     }
 
     fun decrypt(chipper: String, key: String): String {
-        val chipper = chipper.toUpperCase()
-        val key = enlargeKey(chipper, key)
-        return chipper.toUpperCase().mapIndexed { index, c -> decrypt(c, key[index]) }.joinToString("")
+        return crypt(chipper, key, ::decrypt)
+    }
+
+    private fun crypt(text: String, key: String, cryptFunction: (input: Char, key: Char) -> Char ): String {
+        val specialChars = getSpecialChars(text)
+        val text = removeSpecialChars(specialChars, text)
+        val key = cleanUpKey(key)
+        val chipper = text.mapIndexed { index, c -> cryptFunction(c, key[index % key.length]) }.joinToString("")
+        return insertSpecialChars(chipper, specialChars)
     }
 
     fun encrypt(input: Char, key: Char): Char {
@@ -40,16 +44,25 @@ class Crypt {
         return (o + padding).toChar()
     }
 
-    private fun enlargeKey(text: String, key: String): String {
-        val longKey = key
-                .toUpperCase()
-                .replace(" ", "")
-                .repeat((text.length / key.length).inc())
-                .toMutableList()
-        text.toList()
-                .mapIndexed { index: Int, c: Char -> Pair(index, c) }
-                .filter { x -> x.second < 'A' || x.second > 'Z' }
-                .forEach { pair: Pair<Int, Char> -> longKey.add(pair.first, pair.second) }
-        return longKey.joinToString("")
+    private fun insertSpecialChars(chipper: String, specialChars: List<Pair<Int, Char>>): String {
+        val chipperAsList = chipper.toMutableList()
+        for (specialChar in specialChars) {
+            chipperAsList.add(specialChar.first, specialChar.second)
+        }
+        return chipperAsList.joinToString("")
     }
+
+    private fun removeSpecialChars(specialChars: List<Pair<Int, Char>>, text: String): String {
+        val textAsList = text.toUpperCase().toMutableList()
+        for (specialChar in specialChars) {
+            textAsList.removeIf { c -> c == specialChar.second }
+        }
+        return textAsList.joinToString("")
+    }
+
+    private fun cleanUpKey(key: String) = key.toUpperCase().replace(" ", "")
+
+    private fun getSpecialChars(text: String) = text.toUpperCase().toList()
+            .mapIndexed { index: Int, c: Char -> Pair(index, c) }
+            .filter { x -> x.second < 'A' || x.second > 'Z' }
 }
