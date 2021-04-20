@@ -3,9 +3,75 @@
  */
 package wtf.hahn
 
-class App {
-}
+import java.awt.GridLayout
+import java.lang.Exception
+
+import javax.swing.*
+
 
 fun main() {
-    println()
+    val window = JFrame("Crypt")
+    window.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+    window.setSize(1600, 900)
+    val mainPanel = window.contentPane
+    mainPanel.layout = GridLayout(0, 1)
+
+    val plainTextPanel = JPanel()
+    plainTextPanel.layout = GridLayout()
+    plainTextPanel.add(JLabel("Input"))
+    val plainTextField = JTextArea("input")
+    plainTextPanel.add(plainTextField)
+    mainPanel.add(plainTextPanel)
+
+    val keyPanel = JPanel()
+    keyPanel.layout = GridLayout()
+    keyPanel.add(JLabel("Key"))
+    val keyField = JTextArea("key")
+    keyPanel.add(keyField)
+    mainPanel.add(keyPanel)
+
+    val chipperPanel = JPanel()
+    chipperPanel.layout = GridLayout()
+    chipperPanel.add(JLabel("Chipper"))
+    val chipperField = JTextArea("chipper")
+    chipperPanel.add(chipperField)
+    mainPanel.add(chipperPanel)
+
+    val buttonPanel = JPanel()
+    buttonPanel.layout = GridLayout(0, 3)
+    buttonPanel.add(JLabel())
+    buttonPanel.add(JLabel("Key Length"))
+    val keyLengthField = JTextField()
+    buttonPanel.add(keyLengthField)
+    val encryptButton = JButton("ENCRYPT")
+    val decryptButton = JButton("DECRYPT")
+    val keyGenButton = JButton("Generate Key")
+    buttonPanel.add(encryptButton)
+    buttonPanel.add(decryptButton)
+    buttonPanel.add(keyGenButton)
+    mainPanel.add(buttonPanel)
+
+    encryptButton.addActionListener {
+        val plainText = plainTextField.text.trim()
+        println(plainText)
+        val key = keyField.text.trim()
+        println(key)
+        val encrypt = Crypt().encrypt(plainText, key)
+        println(encrypt)
+        chipperField.text = encrypt
+    }
+    decryptButton.addActionListener {
+        plainTextField.text = Crypt().decrypt(chipperField.text.trim(), keyField.text.trim())
+    }
+
+    keyGenButton.addActionListener {
+        val length = try {
+            keyLengthField.text.trim().toInt()
+        } catch (e: Exception) {
+            10
+        }
+        keyField.text = Crypt().keyGen(length)
+    }
+
+    window.isVisible = true
 }
